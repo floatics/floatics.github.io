@@ -1,5 +1,5 @@
 const OMOK = {
-  lineCount: 19,
+  lineCount: 29,
   margin: 20,
   canvas: document.getElementById('board'),
   getContext: () => OMOK.canvas.getContext('2d'),
