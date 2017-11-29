@@ -1,10 +1,11 @@
 const OMOK = {
-  lineCount: 29,
+  lineCount: 19,
   margin: 20,
+  users: ['black', 'white', 'pink', 'darkred', 'darkblue'],
   canvas: document.getElementById('board'),
   getContext: () => OMOK.canvas.getContext('2d'),
   // 초기화 함수
-  init() {
+  init(){
     OMOK.clear();
     OMOK.drawBoard();
     OMOK.bindEvents();
@@ -14,12 +15,12 @@ const OMOK = {
     const context = OMOK.getContext();
     const elemLeft = OMOK.canvas.offsetLeft;
     const elemTop = OMOK.canvas.offsetTop;
-
+    iCount = 0;
     OMOK.canvas.addEventListener('click', (e) => {
       const x = event.pageX - elemLeft;
       const y = event.pageY - elemTop;
-      console.log(x, y);
-      OMOK.drawStone(x, y);
+
+      OMOK.drawStone(x, y, OMOK.users[iCount++ % OMOK.users.length]);
     });
   },
   // 캔버스 초기화
@@ -56,6 +57,9 @@ const OMOK = {
   drawStone(x, y, color = 'black') {
     const ctx = OMOK.getContext();
     const space = (OMOK.canvas.width - OMOK.margin * 2) / (OMOK.lineCount - 1);
+
+    x = Math.floor(x / space) * space + OMOK.margin;
+    y = Math.floor(y / space) * space + OMOK.margin;
 
     ctx.beginPath();
     ctx.fillStyle = color;
