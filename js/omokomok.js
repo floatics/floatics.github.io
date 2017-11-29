@@ -1,7 +1,8 @@
 const OMOK = {
-  lineCount: 19,
+  lineCount: 11,
   margin: 20,
-  users: ['black', 'white', 'pink', 'darkred', 'darkblue'],
+  humanize: 0.05,
+  users: ['black', 'white', 'pink'/*, 'darkred', 'darkblue'*/],
   canvas: document.getElementById('board'),
   getContext: () => OMOK.canvas.getContext('2d'),
   // 초기화 함수
@@ -60,6 +61,12 @@ const OMOK = {
 
     x = Math.floor(x / space) * space + OMOK.margin;
     y = Math.floor(y / space) * space + OMOK.margin;
+
+    xHumunize = (space * OMOK.humanize * Math.random()) - (space * OMOK.humanize * Math.random());
+    yHumunize = (space * OMOK.humanize * Math.random()) - (space * OMOK.humanize * Math.random());
+
+    x += xHumunize;
+    y += yHumunize;
 
     ctx.beginPath();
     ctx.fillStyle = color;
