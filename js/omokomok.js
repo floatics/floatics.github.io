@@ -4,7 +4,13 @@ const OMOK = {
   humanize: 0.05,
   users: ['black', 'white', 'pink'/*, 'darkred', 'darkblue'*/],
   canvas: document.getElementById('board'),
-  getContext: () => OMOK.canvas.getContext('2d'),
+  context: null,
+  getContext: () => {
+    if (!OMOK.context) {
+      OMOK.context = OMOK.canvas.getContext('2d');
+    }
+    return OMOK.context;
+  },
   // 초기화 함수
   init(){
     OMOK.clear();
