@@ -37,6 +37,7 @@ const OMOK = {
       const iUserIndex = (iCount++ % OMOK.users.length);
 
       OMOK.drawStone(x, y, iUserIndex);
+      e.preventDefault();
     });
   },
   // 캔버스 초기화
