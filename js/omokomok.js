@@ -1,4 +1,5 @@
 const OMOK = {
+  stonesLocations: [],
   lineCount: 11,
   margin: 20,
   humanize: 0.05,
@@ -14,8 +15,15 @@ const OMOK = {
   // 초기화 함수
   init(){
     OMOK.clear();
+    OMOK.initStonesLocations();
     OMOK.drawBoard();
     OMOK.bindEvents();
+  },
+  // 돌위치 초기화
+  initStonesLocations() {
+    for (let i = 0; i < OMOK.lineCount; i += 1) {
+      OMOK.stonesLocations[i] = new Array(OMOK.lineCount);
+    }
   },
   // 이벤트 등록
   bindEvents() {
@@ -26,8 +34,9 @@ const OMOK = {
     OMOK.canvas.addEventListener('click', (e) => {
       const x = event.pageX - elemLeft;
       const y = event.pageY - elemTop;
+      const iUserIndex = (iCount++ % OMOK.users.length);
 
-      OMOK.drawStone(x, y, OMOK.users[iCount++ % OMOK.users.length]);
+      OMOK.drawStone(x, y, iUserIndex);
     });
   },
   // 캔버스 초기화
@@ -48,12 +57,6 @@ const OMOK = {
     }
     ctx.stroke();
 
-    /**
-     * 점 그리기
-     * @todo
-     *   1. 함수로 분리
-     *   2. 바둑판 사이즈에따라 가변처리
-     **/
     const centerX = OMOK.canvas.width / 2;
     const centerY = OMOK.canvas.height / 2;
     ctx.beginPath();
@@ -61,24 +64,37 @@ const OMOK = {
     ctx.fill();
   },
   // 바둑돌 그리기
-  drawStone(x, y, color = 'black') {
+  drawStone(x, y, userIndex) {
     const ctx = OMOK.getContext();
     const space = (OMOK.canvas.width - OMOK.margin * 2) / (OMOK.lineCount - 1);
 
-    x = Math.floor(x / space) * space + OMOK.margin;
-    y = Math.floor(y / space) * space + OMOK.margin;
+    const indexOfX = Math.floor(x / space);
+    const indexOfY = Math.floor(y / space);
 
-    xHumunize = (space * OMOK.humanize * Math.random()) - (space * OMOK.humanize * Math.random());
-    yHumunize = (space * OMOK.humanize * Math.random()) - (space * OMOK.humanize * Math.random());
+    x = indexOfX * space + OMOK.margin;
+    y = indexOfY * space + OMOK.margin;
 
-    x += xHumunize;
-    y += yHumunize;
+    if (OMOK.setPosition(indexOfX, indexOfY, userIndex)) {
+      xHumunize = (space * OMOK.humanize * Math.random()) - (space * OMOK.humanize * Math.random());
+      yHumunize = (space * OMOK.humanize * Math.random()) - (space * OMOK.humanize * Math.random());
 
-    ctx.beginPath();
-    ctx.fillStyle = color;
-    // ctx.fillStyle = 'pink';
-    ctx.arc(x, y, (space / 2 * 0.9), 0, 2 * Math.PI, false);
-    ctx.fill();
+      x += xHumunize;
+      y += yHumunize;
+
+      ctx.beginPath();
+      ctx.fillStyle = OMOK.users[userIndex];
+      ctx.arc(x, y, (space / 2 * 0.9), 0, 2 * Math.PI, false);
+      ctx.fill();
+    }
+  },
+  // 바둑돌위치 저장
+  setPosition(x, y, userIndex) {
+    if (OMOK.stonesLocations[x][y] === undefined) {
+      OMOK.stonesLocations[x][y] = userIndex;
+      return true;
+    } else {
+      return false;
+    }
   }
 };
 
