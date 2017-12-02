@@ -58,11 +58,34 @@ const OMOK = {
       ctx.lineTo(OMOK.canvas.height - OMOK.margin, startPoint);
     }
     ctx.stroke();
+    OMOK.drawFlowerPoint();
+  },
+  // 화점 그리기
+  drawFlowerPoint() {
+    const ctx = OMOK.getContext();
+    const space = (OMOK.canvas.width - OMOK.margin * 2) / (OMOK.lineCount - 1);
 
     const centerX = OMOK.canvas.width / 2;
     const centerY = OMOK.canvas.height / 2;
+    const flowerPoint = space * 3 + OMOK.margin;
+
+    // 상단
+    OMOK.drawCircle(flowerPoint, flowerPoint, 3);
+    OMOK.drawCircle(centerX, flowerPoint, 3);
+    OMOK.drawCircle(OMOK.canvas.width - flowerPoint, flowerPoint, 3);
+    // 중앙
+    OMOK.drawCircle(flowerPoint, centerY, 3);
+    OMOK.drawCircle(centerX, centerY, 3);
+    OMOK.drawCircle(OMOK.canvas.width - flowerPoint, centerY, 3);
+    // 하단
+    OMOK.drawCircle(flowerPoint, OMOK.canvas.height - flowerPoint, 3);
+    OMOK.drawCircle(centerX, OMOK.canvas.height - flowerPoint, 3);
+    OMOK.drawCircle(OMOK.canvas.width - flowerPoint, OMOK.canvas.height - flowerPoint, 3);
+  },
+  drawCircle(x, y, size) {
+    const ctx = OMOK.getContext();
     ctx.beginPath();
-    ctx.arc(centerX, centerX, 3, 0, 2 * Math.PI, false);
+    ctx.arc(x, y, size, 0, 2 * Math.PI, false);
     ctx.fill();
   },
   // 바둑돌 그리기
