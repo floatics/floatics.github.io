@@ -3,7 +3,7 @@ const OMOK = {
   lineCount: 19,
   margin: 20,
   humanize: 0.05,
-  users: ['black', 'white', 'pink'/*, 'darkred', 'darkblue'*/],
+  users: ['black', 'white', 'pink'/*, 'darkblue', 'darkred'*/],
   canvas: document.getElementById('board'),
   context: null,
   getContext: () => {
@@ -30,13 +30,17 @@ const OMOK = {
     const context = OMOK.getContext();
     const elemLeft = OMOK.canvas.offsetLeft;
     const elemTop = OMOK.canvas.offsetTop;
-    iCount = 0;
+    iTurnCount = 0;
+    // 바둑돌 
     OMOK.canvas.addEventListener('click', (e) => {
       const x = event.pageX - elemLeft;
       const y = event.pageY - elemTop;
-      const iUserIndex = (iCount++ % OMOK.users.length);
+      const iUserIndex = (iTurnCount % OMOK.users.length);
 
-      OMOK.drawStone(x, y, iUserIndex);
+      if (true === OMOK.drawStone(x, y, iUserIndex)) {
+        iTurnCount++;
+      }
+
       e.preventDefault();
       e.stopPropagation();
     });
@@ -82,6 +86,7 @@ const OMOK = {
     OMOK.drawCircle(centerX, OMOK.canvas.height - flowerPoint, 3);
     OMOK.drawCircle(OMOK.canvas.width - flowerPoint, OMOK.canvas.height - flowerPoint, 3);
   },
+  // 원 그리기 wrapper
   drawCircle(x, y, size) {
     const ctx = OMOK.getContext();
     ctx.beginPath();
@@ -99,7 +104,7 @@ const OMOK = {
     x = indexOfX * space + OMOK.margin;
     y = indexOfY * space + OMOK.margin;
 
-    if (OMOK.setPosition(indexOfX, indexOfY, userIndex)) {
+    if (OMOK.setPosition(indexOfX, indexOfY, userIndex) === true) {
       xHumunize = (space * OMOK.humanize * Math.random()) - (space * OMOK.humanize * Math.random());
       yHumunize = (space * OMOK.humanize * Math.random()) - (space * OMOK.humanize * Math.random());
 
@@ -110,6 +115,98 @@ const OMOK = {
       ctx.fillStyle = OMOK.users[userIndex];
       ctx.arc(x, y, (space / 2 * 0.9), 0, 2 * Math.PI, false);
       ctx.fill();
+
+      OMOK.checkWinner(indexOfX, indexOfY, userIndex);
+      return true;
+    } else {
+      return false;
+    }
+  },
+  // 승패 체크
+  checkWinner(x, y, iUserIndex) {
+    let countN = 0,
+        countS = 0,
+        countW = 0,
+        countE = 0,
+        countNE = 0,
+        countNW = 0,
+        countSE = 0,
+        countSW = 0;
+
+    // 북쪽 체크
+    for (let i = 1; i < 5; i += 1) {
+      if (OMOK.stonesLocations[x] && OMOK.stonesLocations[x][y-i] === iUserIndex) {
+        countN++;
+      } else {
+        break;
+      }
+    }
+    // 남쪽 체크
+    for (let i = 1; i < 5; i += 1) {
+      if (OMOK.stonesLocations[x] && OMOK.stonesLocations[x][y+i] === iUserIndex) {
+        countS++;
+      } else {
+        break;
+      }
+    }
+    // 동쪽 체크
+    for (let i = 1; i < 5; i += 1) {
+      if (OMOK.stonesLocations[x+i] && OMOK.stonesLocations[x+i][y] === iUserIndex) {
+        countE++;
+      } else {
+        break;
+      }
+    }
+    // 서쪽 체크
+    for (let i = 1; i < 5; i += 1) {
+      if (OMOK.stonesLocations[x-i] && OMOK.stonesLocations[x-i][y] === iUserIndex) {
+        countW++;
+      } else {
+        break;
+      }
+    }
+    // 북동쪽 체크
+    for (let i = 1; i < 5; i += 1) {
+      if (OMOK.stonesLocations[x+i] && OMOK.stonesLocations[x+i][y-i] === iUserIndex) {
+        countNE++;
+      } else {
+        break;
+      }
+    }
+    // 남서쪽 체크
+    for (let i = 1; i < 5; i += 1) {
+      if (OMOK.stonesLocations[x-i] && OMOK.stonesLocations[x-i][y+i] === iUserIndex) {
+        countSW++;
+      } else {
+        break;
+      }
+    }
+    // 북서쪽 체크
+    for (let i = 1; i < 5; i += 1) {
+      if (OMOK.stonesLocations[x-i] && OMOK.stonesLocations[x-i][y-i] === iUserIndex) {
+        countNW++;
+      } else {
+        break;
+      }
+    }
+    // 남동쪽 체크
+    for (let i = 1; i < 5; i += 1) {
+      if (OMOK.stonesLocations[x+i] && OMOK.stonesLocations[x+i][y+i] === iUserIndex) {
+        countSE++;
+      } else {
+        break;
+      }
+    }
+
+    let maxCount = Math.max(countN + countS, countW + countE, countNE + countSW, countNW + countSE) + 1;
+
+    let message = OMOK.users[iUserIndex] + '돌 ' + (maxCount) + '연속';
+    console.log(message);
+
+    if (maxCount === 5) {
+      setTimeout(function() {
+        alert(OMOK.users[iUserIndex] + ' 승리 !!!');
+      }, 0);
     }
   },
   // 바둑돌위치 저장
