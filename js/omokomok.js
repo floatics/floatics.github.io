@@ -7,6 +7,7 @@ const OMOK = {
   humanize: 0.05,
   users: ['black', 'white', 'pink'/*, 'darkblue', 'darkred'*/],
   canvas: document.getElementById('board'),
+  btnHistoryBack: document.getElementById('btnBack'),
   context: null,
   getContext: () => {
     if (!OMOK.context) {
@@ -21,6 +22,26 @@ const OMOK = {
     OMOK.initStonesHistory();
     OMOK.drawBoard();
     OMOK.bindStoneEvents();
+    OMOK.bindHistoryBackEvents();
+  },
+  bindHistoryBackEvents() {
+    OMOK.btnHistoryBack.addEventListener('click', (e) => {
+      if (OMOK.history.length) {
+        OMOK.history.pop();
+        OMOK.iTurnIndex--;
+        OMOK.redrawStones();
+      }
+    });
+  },
+  redrawStones() {
+    let tmp = OMOK.history;
+    OMOK.clear();
+    OMOK.initStonesLocations();
+    OMOK.drawBoard();
+    OMOK.initStonesHistory();
+    for (i in tmp) {
+      OMOK.drawStone(tmp[i].x, tmp[i].y, tmp[i].userIndex, true);
+    }
   },
   // 히스토리 초기화
   initStonesHistory() {
@@ -61,6 +82,7 @@ const OMOK = {
     const ctx = OMOK.getContext();
     const space = (OMOK.canvas.width - OMOK.margin * 2) / (OMOK.lineCount - 1);
 
+    ctx.beginPath();
     for (let index = 0; index < OMOK.lineCount; index += 1) {
       const startPoint = index * space + OMOK.margin;
       ctx.moveTo(startPoint, OMOK.margin);
@@ -80,6 +102,7 @@ const OMOK = {
     const centerY = OMOK.canvas.height / 2;
     const flowerPoint = space * 3 + OMOK.margin;
 
+    ctx.fillStyle = 'black';
     // 상단
     OMOK.drawCircle(flowerPoint, flowerPoint, 3);
     OMOK.drawCircle(centerX, flowerPoint, 3);
@@ -101,12 +124,18 @@ const OMOK = {
     ctx.fill();
   },
   // 바둑돌 그리기
-  drawStone(x, y, userIndex) {
+  drawStone(x, y, userIndex, bIsRedraw = false) {
     const ctx = OMOK.getContext();
     const space = (OMOK.canvas.width - OMOK.margin * 2) / (OMOK.lineCount - 1);
+    let indexOfX, indexOfY;
 
-    const indexOfX = Math.floor(x / space);
-    const indexOfY = Math.floor(y / space);
+    if (bIsRedraw === true) {
+      indexOfX = x;
+      indexOfY = y;
+    } else {
+      indexOfX = Math.floor(x / space);
+      indexOfY = Math.floor(y / space);
+    }
 
     x = indexOfX * space + OMOK.margin;
     y = indexOfY * space + OMOK.margin;
