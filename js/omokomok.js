@@ -1,5 +1,7 @@
 const OMOK = {
   stonesLocations: [],
+  history: [],
+  iTurnIndex: 0,
   lineCount: 15,
   margin: 20,
   humanize: 0.05,
@@ -16,8 +18,13 @@ const OMOK = {
   init(){
     OMOK.clear();
     OMOK.initStonesLocations();
+    OMOK.initStonesHistory();
     OMOK.drawBoard();
-    OMOK.bindEvents();
+    OMOK.bindStoneEvents();
+  },
+  // 히스토리 초기화
+  initStonesHistory() {
+  	OMOK.history = [];
   },
   // 돌위치 초기화
   initStonesLocations() {
@@ -26,19 +33,19 @@ const OMOK = {
     }
   },
   // 이벤트 등록
-  bindEvents() {
+  bindStoneEvents() {
     const context = OMOK.getContext();
     const elemLeft = OMOK.canvas.offsetLeft;
     const elemTop = OMOK.canvas.offsetTop;
-    iTurnCount = 0;
+    OMOK.iTurnIndex = 0;
     // 바둑돌 
     OMOK.canvas.addEventListener('click', (e) => {
       const x = event.pageX - elemLeft;
       const y = event.pageY - elemTop;
-      const iUserIndex = (iTurnCount % OMOK.users.length);
+      const iUserIndex = (OMOK.iTurnIndex % OMOK.users.length);
 
       if (true === OMOK.drawStone(x, y, iUserIndex)) {
-        iTurnCount++;
+        OMOK.iTurnIndex++;
       }
 
       e.preventDefault();
@@ -213,6 +220,7 @@ const OMOK = {
   setPosition(x, y, userIndex) {
     if (OMOK.stonesLocations[x][y] === undefined) {
       OMOK.stonesLocations[x][y] = userIndex;
+      OMOK.history.push({x:x, y:y, userIndex:userIndex});
       return true;
     } else {
       return false;
@@ -221,4 +229,3 @@ const OMOK = {
 };
 
 OMOK.init();
-
