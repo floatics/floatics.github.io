@@ -1,6 +1,6 @@
 const OMOK = {
   stonesLocations: [],
-  lineCount: 19,
+  lineCount: 15,
   margin: 20,
   humanize: 0.05,
   users: ['black', 'white', 'pink'/*, 'darkblue', 'darkred'*/],
