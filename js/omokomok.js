@@ -24,6 +24,18 @@ const OMOK = {
     OMOK.bindStoneEvents();
     OMOK.bindHistoryBackEvents();
   },
+  initFirebase() {
+    // Initialize Firebase
+    const config = {
+      apiKey: "AIzaSyBb0FbzWouXboRdCORAQnXMs265jmDF3IE",
+      authDomain: "ohglemok.firebaseapp.com",
+      databaseURL: "https://ohglemok.firebaseio.com",
+      projectId: "ohglemok",
+      storageBucket: "ohglemok.appspot.com",
+      messagingSenderId: "186026909541"
+    };
+    firebase.initializeApp(config);
+  },
   bindHistoryBackEvents() {
     OMOK.btnHistoryBack.addEventListener('click', (e) => {
       if (OMOK.history.length) {
