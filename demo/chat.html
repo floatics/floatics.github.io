@@ -1,0 +1,58 @@
+<html>
+<head>
+  <script src="https://www.gstatic.com/firebasejs/4.7.0/firebase.js"></script>
+  <style>
+  textarea, input {display: block; width: 500px;}
+  </style>
+</head>
+<body>
+  <textarea id="chatBox" rows="10" readonly="readonly">- welcome -</textarea>
+  <input type="text" value="" id="input" />
+
+<script>
+  let uid = null;
+  // Initialize Firebase
+  var firebaseConfig = {
+    apiKey: "AIzaSyBb0FbzWouXboRdCORAQnXMs265jmDF3IE",
+    authDomain: "ohglemok.firebaseapp.com",
+    databaseURL: "https://ohglemok.firebaseio.com",
+    projectId: "ohglemok",
+    storageBucket: "ohglemok.appspot.com",
+    messagingSenderId: "186026909541"
+  };
+  firebase.initializeApp(firebaseConfig);
+  // https://firebase.google.com/docs/auth/web/anonymous-auth
+  firebase.auth().signInAnonymously();
+  firebase.auth().onAuthStateChanged(function(user) {
+    uid = (user) ? user.uid: null;
+  });
+  var database = firebase.database();
+  // channel
+  // var roomNo = firebase.database().ref().child('chat').push().key;
+  var roomNo = 'demo';
+
+  firebase.database().ref('chat/' + roomNo).on('child_added', function(data) {
+    addText(data.val().uid, data.val().message);
+  });
+
+  document.getElementById('input').addEventListener('keydown', function(e) {
+    if (e.key == 'Enter') {
+      pushMessage(uid, this.value);
+      this.value = '';
+    }
+  });
+
+  function addText(uid, message) {
+    var chatbox = document.getElementById('chatBox');
+    chatbox.value += ("\n" + uid + ' : ' + message);
+    chatbox.scrollTop = chatbox.scrollHeight;
+  }
+
+  function pushMessage(uid, message) {
+    let key = firebase.database().ref('chat').child(roomNo).push().key;
+    firebase.database().ref('chat/' + roomNo + '/' + key).set({uid: uid, message: message});
+  }
+</script>
+
+</body>
+</html>
