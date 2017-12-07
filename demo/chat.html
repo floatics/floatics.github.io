@@ -31,7 +31,7 @@
   // var roomNo = firebase.database().ref().child('chat').push().key;
   var roomNo = 'demo';
 
-  firebase.database().ref('chat/' + roomNo).on('child_added', function(data) {
+  firebase.database().ref('chat/' + roomNo).limitToLast(10).on('child_added', function(data) {
     addText(data.val().uid, data.val().message);
   });
 
