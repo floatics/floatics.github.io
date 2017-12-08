@@ -174,7 +174,7 @@ const OMOK = {
       ctx.arc(x, y, (space / 2 * 0.9), 0, 2 * Math.PI, false);
       ctx.fill();
 
-      OMOK.drawText(x, y, turnIndex + 1);
+      OMOK.drawText(x, y, parseInt(turnIndex) + 1);
 
       OMOK.checkWinner(indexOfX, indexOfY, userIndex);
       return true;
