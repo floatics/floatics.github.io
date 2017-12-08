@@ -52,7 +52,7 @@ const OMOK = {
     OMOK.drawBoard();
     OMOK.initStonesHistory();
     for (i in tmp) {
-      OMOK.drawStone(tmp[i].x, tmp[i].y, tmp[i].userIndex, true);
+      OMOK.drawStone(tmp[i].x, tmp[i].y, tmp[i].userIndex, i, true);
     }
   },
   // 히스토리 초기화
@@ -77,7 +77,7 @@ const OMOK = {
       const y = event.pageY - elemTop;
       const iUserIndex = (OMOK.iTurnIndex % OMOK.users.length);
 
-      if (true === OMOK.drawStone(x, y, iUserIndex)) {
+      if (true === OMOK.drawStone(x, y, iUserIndex, OMOK.iTurnIndex, false)) {
         OMOK.iTurnIndex++;
       }
 
@@ -135,8 +135,18 @@ const OMOK = {
     ctx.arc(x, y, size, 0, 2 * Math.PI, false);
     ctx.fill();
   },
+  drawText(x, y, text) {
+    const ctx = OMOK.getContext();
+    ctx.font = "20px sans-serif";
+    ctx.textAlign="center"; 
+    ctx.fillStyle = 'grey';
+    ctx.fillText(text, x, y+5);
+    // ctx.strokeStyle = 'white';
+    // ctx.lineWidth = 0.1;
+    // ctx.strokeText(text, x, y+5);
+  },
   // 바둑돌 그리기
-  drawStone(x, y, userIndex, bIsRedraw = false) {
+  drawStone(x, y, userIndex, turnIndex,bIsRedraw = false) {
     const ctx = OMOK.getContext();
     const space = (OMOK.canvas.width - OMOK.margin * 2) / (OMOK.lineCount - 1);
     let indexOfX, indexOfY;
@@ -163,6 +173,8 @@ const OMOK = {
       ctx.fillStyle = OMOK.users[userIndex];
       ctx.arc(x, y, (space / 2 * 0.9), 0, 2 * Math.PI, false);
       ctx.fill();
+
+      OMOK.drawText(x, y, turnIndex + 1);
 
       OMOK.checkWinner(indexOfX, indexOfY, userIndex);
       return true;
