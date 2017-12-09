@@ -5,10 +5,13 @@ const OMOK = {
   lineCount: 15,
   margin: 20,
   humanize: 0.05,
-  users: ['black', 'white', 'pink'/*, 'darkblue', 'darkred'*/],
+  users: ['black', 'white'/*, 'pink', 'darkblue', 'darkred'*/],
   canvas: document.getElementById('board'),
   btnHistoryBack: document.getElementById('btnBack'),
   context: null,
+  uid: null,
+  database: null,
+  roomNo: 'testRoom',
   getContext: () => {
     if (!OMOK.context) {
       OMOK.context = OMOK.canvas.getContext('2d');
@@ -23,6 +26,28 @@ const OMOK = {
     OMOK.drawBoard();
     OMOK.bindStoneEvents();
     OMOK.bindHistoryBackEvents();
+    OMOK.initFirebase();
+    OMOK.listenOtherStone();
+    OMOK.resetGame();
+  },
+  resetGame() {
+    firebase.database().ref('omok').on('child_removed', function(data) {
+      OMOK.consoleLog('reset!!!');
+      document.location.reload();
+    });
+
+    document.getElementById('btnRestart').addEventListener('click', (e) => {
+      firebase.database().ref('omok').remove();
+    });
+  },
+  listenOtherStone() {
+    firebase.database().ref('omok/' + OMOK.roomNo).on('child_added', function(data) {
+      var info = data.val();
+      if (info.uid !== OMOK.uid) {
+        OMOK.drawStone(info.x, info.y, info.index, info.turn, true);
+        OMOK.iTurnIndex++;
+      }
+    });
   },
   initFirebase() {
     // Initialize Firebase
@@ -35,6 +60,13 @@ const OMOK = {
       messagingSenderId: "186026909541"
     };
     firebase.initializeApp(config);
+    firebase.auth().signInAnonymously();
+    firebase.auth().onAuthStateChanged((user) => {
+      OMOK.consoleLog('Ready!');
+      OMOK.consoleLog('UID : ' + user.uid);
+      OMOK.uid = (user) ? user.uid: null;
+    });
+    OMOK.database = firebase.database();
   },
   bindHistoryBackEvents() {
     OMOK.btnHistoryBack.addEventListener('click', (e) => {
@@ -137,8 +169,8 @@ const OMOK = {
   },
   drawText(x, y, text) {
     const ctx = OMOK.getContext();
-    ctx.font = "20px sans-serif";
-    ctx.textAlign="center"; 
+    ctx.font = '20px sans-serif';
+    ctx.textAlign = 'center'; 
     ctx.fillStyle = 'grey';
     ctx.fillText(text, x, y+5);
     // ctx.strokeStyle = 'white';
@@ -146,7 +178,7 @@ const OMOK = {
     // ctx.strokeText(text, x, y+5);
   },
   // 바둑돌 그리기
-  drawStone(x, y, userIndex, turnIndex,bIsRedraw = false) {
+  drawStone(x, y, userIndex, turnIndex, bIsRedraw = false) {
     const ctx = OMOK.getContext();
     const space = (OMOK.canvas.width - OMOK.margin * 2) / (OMOK.lineCount - 1);
     let indexOfX, indexOfY;
@@ -163,6 +195,9 @@ const OMOK = {
     y = indexOfY * space + OMOK.margin;
 
     if (OMOK.setPosition(indexOfX, indexOfY, userIndex) === true) {
+      if (bIsRedraw === false) {
+        OMOK.sendToServer(indexOfX, indexOfY, userIndex, turnIndex, OMOK.uid);
+      }
       xHumunize = (space * OMOK.humanize * Math.random()) - (space * OMOK.humanize * Math.random());
       yHumunize = (space * OMOK.humanize * Math.random()) - (space * OMOK.humanize * Math.random());
 
@@ -181,6 +216,10 @@ const OMOK = {
     } else {
       return false;
     }
+  },
+  sendToServer(x, y, index, turn, uid) {
+    let key = firebase.database().ref('omok').child(OMOK.roomNo).push().key;
+    firebase.database().ref('omok/' + OMOK.roomNo + '/' + key).set({uid: uid, index: index, turn: turn, x: x, y: y});
   },
   // 승패 체크
   checkWinner(x, y, iUserIndex) {
@@ -261,13 +300,19 @@ const OMOK = {
     let maxCount = Math.max(countN + countS, countW + countE, countNE + countSW, countNW + countSE) + 1;
 
     let message = OMOK.users[iUserIndex] + '돌 ' + (maxCount) + '연속';
-    console.log(message);
+    OMOK.consoleLog(message);
 
     if (maxCount === 5) {
       setTimeout(function() {
         alert(OMOK.users[iUserIndex] + ' 승리 !!!');
       }, 0);
     }
+  },
+  consoleLog(message) {
+    var textArea = document.getElementById('console');
+    textArea.value += ("\n" + message);
+    textArea.scrollTop = textArea.scrollHeight;
+    console.log(message);
   },
   // 바둑돌위치 저장
   setPosition(x, y, userIndex) {
