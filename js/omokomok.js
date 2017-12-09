@@ -29,6 +29,30 @@ const OMOK = {
     OMOK.initFirebase();
     OMOK.listenOtherStone();
     OMOK.resetGame();
+    OMOK.bindChatEvent();
+  },
+  bindChatEvent() {
+    firebase.database().ref('chat/' + OMOK.roomNo).limitToLast(10).on('child_added', function(data) {
+      OMOK.addText(data.val().uid, data.val().message);
+    });
+
+    document.getElementById('chatInput').addEventListener('keyup', function(e) {
+      if (e.key == 'Enter' && this.value != '') {
+        OMOK.pushMessage(OMOK.uid, this.value);
+        this.value = '';
+      }
+    });
+  },
+  addText(uid, message) {
+    var chatbox = document.getElementById('chatBox');
+    var pName = (uid === OMOK.uid) ? 'me' : 'others';
+    chatbox.value += ("\n" + pName + ' : ' + message);
+    chatbox.scrollTop = chatbox.scrollHeight;
+  },
+  pushMessage(uid, message) {
+    console.log('push');
+    let key = firebase.database().ref('chat').child(OMOK.roomNo).push().key;
+    firebase.database().ref('chat/' + OMOK.roomNo + '/' + key).set({uid: uid, message: message});
   },
   resetGame() {
     firebase.database().ref('omok').on('child_removed', function(data) {

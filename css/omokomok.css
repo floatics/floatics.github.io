@@ -1,5 +1,6 @@
 * { padding: 0; margin: 0; }
 canvas { background: #DC8; display: block; margin: 0 auto; }
 div { display: block; margin: 0 auto; }
-input { margin: 0 auto; width: 200px; height: 40px;}
-textarea {width: 600px; height:150px;}
+input#display { margin: 0 auto; width: 200px; height: 40px;}
+input#chatInput { margin: 0 auto; width: 600px;}
+textarea {width: 300px; height:150px;}
