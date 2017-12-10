@@ -26,10 +26,14 @@ const OMOK = {
     OMOK.drawBoard();
     OMOK.bindStoneEvents();
     OMOK.bindHistoryBackEvents();
+    OMOK.updateDisplay();
     OMOK.initFirebase();
     OMOK.listenOtherStone();
     OMOK.resetGame();
     OMOK.bindChatEvent();
+  },
+  updateDisplay() {
+    document.getElementById('display').value =(OMOK.iTurnIndex+1) + ' / ' + OMOK.users[OMOK.iTurnIndex % OMOK.users.length];
   },
   bindChatEvent() {
     firebase.database().ref('chat/' + OMOK.roomNo).limitToLast(10).on('child_added', function(data) {
@@ -70,6 +74,7 @@ const OMOK = {
       if (info.uid !== OMOK.uid) {
         OMOK.drawStone(info.x, info.y, info.index, info.turn, true);
         OMOK.iTurnIndex++;
+        OMOK.updateDisplay();
       }
     });
   },
@@ -135,6 +140,7 @@ const OMOK = {
 
       if (true === OMOK.drawStone(x, y, iUserIndex, OMOK.iTurnIndex, false)) {
         OMOK.iTurnIndex++;
+        OMOK.updateDisplay();
       }
 
       e.preventDefault();
