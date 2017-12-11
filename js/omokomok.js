@@ -242,6 +242,7 @@ const OMOK = {
       OMOK.drawText(x, y, parseInt(turnIndex) + 1);
 
       OMOK.checkWinner(indexOfX, indexOfY, userIndex);
+      OMOK.calculatePoint(userIndex);
       return true;
     } else {
       return false;
@@ -251,8 +252,20 @@ const OMOK = {
     let key = firebase.database().ref('omok').child(OMOK.roomNo).push().key;
     firebase.database().ref('omok/' + OMOK.roomNo + '/' + key).set({uid: uid, index: index, turn: turn, x: x, y: y});
   },
-  // 승패 체크
-  checkWinner(x, y, iUserIndex) {
+  // 
+  calculatePoint(iUserIndex) {
+    let message = '';
+    for (let tmpX = 0; tmpX < OMOK.lineCount; tmpX += 1) {
+      for (let tmpY = 0; tmpY < OMOK.lineCount; tmpY += 1) {
+        let winningPoint = OMOK.getWinningPoint(tmpY, tmpX, iUserIndex);
+        message += (winningPoint + " ");
+      }
+      message += "\n";
+    }
+    console.log(message);
+  },
+  // 연속된돌의 점수
+  getWinningPoint(x, y, iUserIndex) {
     let countN = 0,
         countS = 0,
         countW = 0,
@@ -327,10 +340,14 @@ const OMOK = {
       }
     }
 
-    let maxCount = Math.max(countN + countS, countW + countE, countNE + countSW, countNW + countSE) + 1;
+    return Math.max(countN + countS, countW + countE, countNE + countSW, countNW + countSE) + 1;
+  },
+  // 승패 체크
+  checkWinner(x, y, iUserIndex) {
+    let maxCount = OMOK.getWinningPoint(x, y, iUserIndex);
 
     let message = OMOK.users[iUserIndex] + '돌 ' + (maxCount) + '연속';
-    OMOK.consoleLog(message);
+    // OMOK.consoleLog(message);
 
     if (maxCount === 5) {
       setTimeout(function() {
