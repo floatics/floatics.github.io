@@ -336,9 +336,9 @@ const OMOK = {
     }
     let recommendPoint = OMOK.getRecommentPoint(arrTotalPoints);
     OMOK.getLayerContext().clearRect(0, 0, OMOK.canvas.width, OMOK.canvas.height);
-    OMOK.drawRecommendPoint(arrTotalPoints, "rgba(0, 255, 0, 0.5)", 5);
-    OMOK.drawRecommendPoint(arrOthersPoints, "rgba(0, 0, 255, 0.5)", 9);
-    OMOK.drawRecommendPoint(arrMyPoints, "rgba(255, 0, 0, 0.5)", 9);
+    OMOK.drawRecommendPoint(arrTotalPoints, "rgba(0, 255, 0, 0.5)", 4);
+    OMOK.drawRecommendPoint(arrOthersPoints, "rgba(0, 0, 255, 0.5)", 7);
+    OMOK.drawRecommendPoint(arrMyPoints, "rgba(255, 0, 0, 0.5)", 7);
     console.log(message);
 
   },
@@ -418,7 +418,7 @@ const OMOK = {
       }
     }
 
-    return Math.max(countN + countS, countW + countE, countNE + countSW, countNW + countSE);
+    return Math.max(countN + countS, countW + countE, countNE + countSW, countNW + countSE) + 1;
   },
   // 승패 체크
   checkWinner(x, y, iUserIndex) {
@@ -427,7 +427,7 @@ const OMOK = {
     let message = OMOK.users[iUserIndex] + '돌 ' + (maxCount) + '연속';
     // OMOK.consoleLog(message);
 
-    if (maxCount === 4) {
+    if (maxCount === 5) {
       setTimeout(function() {
         alert(OMOK.users[iUserIndex] + ' 승리 !!!');
       }, 0);
