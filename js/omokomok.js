@@ -263,19 +263,23 @@ const OMOK = {
     let key = firebase.database().ref('omok').child(OMOK.roomNo).push().key;
     firebase.database().ref('omok/' + OMOK.roomNo + '/' + key).set({uid: uid, index: index, turn: turn, x: x, y: y});
   },
-  drawRecommendPoint(totalPoints) {
+  clearCanvas(ctx) {
+    ctx.clearRect(0, 0, OMOK.canvas.width, OMOK.canvas.height);
+  },
+  drawRecommendPoint(totalPoints, color, size) {
     // console.log(totalPoints);
     const ctx = OMOK.getLayerContext();
-    OMOK.getLayerContext().clearRect(0, 0, OMOK.canvas.width, OMOK.canvas.height);
     const space = (OMOK.canvas.width - OMOK.margin * 2) / (OMOK.lineCount - 1);
     ctx.font = '20px sans-serif';
     ctx.textAlign = 'center'; 
-    ctx.fillStyle = 'red';
+    ctx.fillStyle = color;
 
     for (x in totalPoints) {
       for (y in totalPoints[x]) {
-        ctx.font = 1 + (totalPoints[x][y]*5) + 'px sans-serif';
-        ctx.fillText(totalPoints[x][y], x*space+OMOK.margin, y*space+OMOK.margin+5);
+        if (totalPoints[x][y] != 0) {
+          ctx.font = 5 + (totalPoints[x][y] * size) + 'px sans-serif';
+          ctx.fillText(totalPoints[x][y], x * space + OMOK.margin, y * space + OMOK.margin + 5);
+        }
       }
     }
   },
@@ -322,7 +326,7 @@ const OMOK = {
             arrTotalPoints[tmpX][tmpY] += OMOK.getWinningPoint(tmpX, tmpY, parseInt(userIndex));
             if (parseInt(userIndex) !== iUserIndex) {
               // 다른 플레이어 점수
-              arrOthersPoints[tmpX][tmpY] += OMOK.getWinningPoint(tmpX, tmpY, parseInt(userIndex));
+              arrOthersPoints[tmpX][tmpY] = Math.max(arrOthersPoints[tmpX][tmpY], OMOK.getWinningPoint(tmpX, tmpY, parseInt(userIndex)));
             }
           });
         }
@@ -331,7 +335,10 @@ const OMOK = {
       message += "\n";
     }
     let recommendPoint = OMOK.getRecommentPoint(arrTotalPoints);
-    OMOK.drawRecommendPoint(arrTotalPoints);
+    OMOK.getLayerContext().clearRect(0, 0, OMOK.canvas.width, OMOK.canvas.height);
+    OMOK.drawRecommendPoint(arrTotalPoints, "rgba(0, 255, 0, 0.5)", 5);
+    OMOK.drawRecommendPoint(arrOthersPoints, "rgba(0, 0, 255, 0.5)", 9);
+    OMOK.drawRecommendPoint(arrMyPoints, "rgba(255, 0, 0, 0.5)", 9);
     console.log(message);
 
   },
@@ -411,7 +418,7 @@ const OMOK = {
       }
     }
 
-    return Math.max(countN + countS, countW + countE, countNE + countSW, countNW + countSE) + 1;
+    return Math.max(countN + countS, countW + countE, countNE + countSW, countNW + countSE);
   },
   // 승패 체크
   checkWinner(x, y, iUserIndex) {
@@ -420,7 +427,7 @@ const OMOK = {
     let message = OMOK.users[iUserIndex] + '돌 ' + (maxCount) + '연속';
     // OMOK.consoleLog(message);
 
-    if (maxCount === 5) {
+    if (maxCount === 4) {
       setTimeout(function() {
         alert(OMOK.users[iUserIndex] + ' 승리 !!!');
       }, 0);
