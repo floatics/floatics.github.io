@@ -7,8 +7,10 @@ const OMOK = {
   humanize: 0.05,
   users: ['black', 'white'/*, 'pink', 'darkblue', 'darkred'*/],
   canvas: document.getElementById('board'),
+  touchLayer: document.getElementById('touchLayer'),
   btnHistoryBack: document.getElementById('btnBack'),
   context: null,
+  layerContext: null,
   uid: null,
   database: null,
   roomNo: 'testRoom',
@@ -18,12 +20,19 @@ const OMOK = {
     }
     return OMOK.context;
   },
+  getLayerContext: () => {
+    if (!OMOK.layerContext) {
+      OMOK.layerContext = OMOK.touchLayer.getContext('2d');
+    }
+    return OMOK.layerContext;
+  },
   // 초기화 함수
   init(){
     OMOK.clear();
     OMOK.initStonesLocations();
     OMOK.initStonesHistory();
     OMOK.drawBoard();
+    OMOK.setTouchLayer();
     OMOK.bindStoneEvents();
     OMOK.bindHistoryBackEvents();
     OMOK.updateDisplay();
@@ -31,6 +40,12 @@ const OMOK = {
     OMOK.listenOtherStone();
     OMOK.resetGame();
     OMOK.bindChatEvent();
+  },
+  setTouchLayer() {
+    let touchLayer = document.getElementById('touchLayer');
+    touchLayer.style.top = 0;
+    touchLayer.style.left = 0;
+    touchLayer.style.position = "absolute";
   },
   updateDisplay() {
     document.getElementById('display').value =(OMOK.iTurnIndex+1) + ' / ' + OMOK.users[OMOK.iTurnIndex % OMOK.users.length];
@@ -63,7 +78,6 @@ const OMOK = {
       OMOK.consoleLog('reset!!!');
       document.location.reload();
     });
-
     document.getElementById('btnRestart').addEventListener('click', (e) => {
       firebase.database().ref('omok').remove();
     });
@@ -133,7 +147,7 @@ const OMOK = {
     const elemTop = OMOK.canvas.offsetTop;
     OMOK.iTurnIndex = 0;
     // 바둑돌 
-    OMOK.canvas.addEventListener('click', (e) => {
+    OMOK.touchLayer.addEventListener('click', (e) => {
       const x = event.pageX - elemLeft;
       const y = event.pageY - elemTop;
       const iUserIndex = (OMOK.iTurnIndex % OMOK.users.length);
@@ -197,11 +211,11 @@ const OMOK = {
     ctx.arc(x, y, size, 0, 2 * Math.PI, false);
     ctx.fill();
   },
-  drawText(x, y, text) {
+  drawText(x, y, text, color='grey') {
     const ctx = OMOK.getContext();
     ctx.font = '20px sans-serif';
     ctx.textAlign = 'center'; 
-    ctx.fillStyle = 'grey';
+    ctx.fillStyle = color;
     ctx.fillText(text, x, y+5);
     // ctx.strokeStyle = 'white';
     // ctx.lineWidth = 0.1;
@@ -252,6 +266,44 @@ const OMOK = {
     let key = firebase.database().ref('omok').child(OMOK.roomNo).push().key;
     firebase.database().ref('omok/' + OMOK.roomNo + '/' + key).set({uid: uid, index: index, turn: turn, x: x, y: y});
   },
+  drawRecommendPoint(totalPoints) {
+    // console.log(totalPoints);
+    const ctx = OMOK.getLayerContext();
+    OMOK.getLayerContext().clearRect(0, 0, OMOK.canvas.width, OMOK.canvas.height);
+    const space = (OMOK.canvas.width - OMOK.margin * 2) / (OMOK.lineCount - 1);
+    ctx.font = '20px sans-serif';
+    ctx.textAlign = 'center'; 
+    ctx.fillStyle = 'red';
+
+    for (x in totalPoints) {
+      for (y in totalPoints[x]) {
+        ctx.fillText(totalPoints[x][y], x*space+OMOK.margin, y*space+OMOK.margin+5);
+      }
+    }
+// getLayerContext
+    // const ctx = OMOK.getLayerContext();
+    // ctx.font = '20px sans-serif';
+    // ctx.textAlign = 'center'; 
+    // ctx.fillStyle = 'red';
+    // ctx.fillText(text, x, y+5);
+  },
+  getRecommentPoint(totalPoints) {
+    let maxNum = 0;
+    let recommendPoints = [];
+    for (i in totalPoints) {
+      maxNum = Math.max(maxNum, Math.max(...totalPoints[i]));
+    }
+
+    for (x in totalPoints) {
+      for (y in totalPoints[x]) {
+        if (totalPoints[x][y] === maxNum) {
+          recommendPoints.push({x: x, y: y, num: maxNum});
+        }
+      }
+    }
+    let index = Math.floor(Math.random() * recommendPoints.length);
+    console.log(recommendPoints[index]);
+  },
   // 
   calculatePoint(iUserIndex) {
     let arrMyPoints = [];
@@ -286,7 +338,10 @@ const OMOK = {
       }
       message += "\n";
     }
+    let recommendPoint = OMOK.getRecommentPoint(arrTotalPoints);
+    // OMOK.drawRecommendPoint(arrTotalPoints);
     console.log(message);
+
   },
   // 연속된돌의 점수
   getWinningPoint(x, y, iUserIndex) {
