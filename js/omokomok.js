@@ -118,7 +118,7 @@ const OMOK = {
   },
   // 히스토리 초기화
   initStonesHistory() {
-  	OMOK.history = [];
+    OMOK.history = [];
   },
   // 돌위치 초기화
   initStonesLocations() {
@@ -254,11 +254,32 @@ const OMOK = {
   },
   // 
   calculatePoint(iUserIndex) {
+    let arrMyPoints = [];
+    let arrOthersPoints = [];
+    let arrTotalPoints = [];
     let message = '';
-    for (let tmpX = 0; tmpX < OMOK.lineCount; tmpX += 1) {
-      for (let tmpY = 0; tmpY < OMOK.lineCount; tmpY += 1) {
-        let winningPoint = OMOK.getWinningPoint(tmpY, tmpX, iUserIndex);
-        message += (winningPoint + " ");
+
+    for (let i = 0; i < OMOK.lineCount; i += 1) {
+      arrMyPoints[i] = new Array(OMOK.lineCount);
+      arrOthersPoints[i] = new Array(OMOK.lineCount);
+      arrTotalPoints[i] = new Array(OMOK.lineCount);
+      arrMyPoints[i].fill(0);
+      arrOthersPoints[i].fill(0);
+      arrTotalPoints[i].fill(0);
+    }
+
+    for (let tmpY = 0; tmpY < OMOK.lineCount; tmpY += 1) {
+      for (let tmpX = 0; tmpX < OMOK.lineCount; tmpX += 1) {
+        if (OMOK.stonesLocations[tmpX][tmpY] === undefined) {
+          arrMyPoints[tmpX][tmpY] += OMOK.getWinningPoint(tmpX, tmpY, iUserIndex);
+          Object.keys(OMOK.users).forEach((userIndex) => {
+            arrTotalPoints[tmpX][tmpY] += OMOK.getWinningPoint(tmpX, tmpY, parseInt(userIndex));
+            if (parseInt(userIndex) !== iUserIndex) {
+              arrOthersPoints[tmpX][tmpY] += OMOK.getWinningPoint(tmpX, tmpY, parseInt(userIndex));
+            }
+          });
+        }
+        message += (arrOthersPoints[tmpX][tmpY] + " ");
       }
       message += "\n";
     }
