@@ -257,7 +257,7 @@ const OMOK = {
     let arrMyPoints = [];
     let arrOthersPoints = [];
     let arrTotalPoints = [];
-    let message = '';
+    let message = "\n";
 
     for (let i = 0; i < OMOK.lineCount; i += 1) {
       arrMyPoints[i] = new Array(OMOK.lineCount);
@@ -271,15 +271,18 @@ const OMOK = {
     for (let tmpY = 0; tmpY < OMOK.lineCount; tmpY += 1) {
       for (let tmpX = 0; tmpX < OMOK.lineCount; tmpX += 1) {
         if (OMOK.stonesLocations[tmpX][tmpY] === undefined) {
+          // 내 점수
           arrMyPoints[tmpX][tmpY] += OMOK.getWinningPoint(tmpX, tmpY, iUserIndex);
           Object.keys(OMOK.users).forEach((userIndex) => {
+            // 전체 점수
             arrTotalPoints[tmpX][tmpY] += OMOK.getWinningPoint(tmpX, tmpY, parseInt(userIndex));
             if (parseInt(userIndex) !== iUserIndex) {
+              // 다른 플레이어 점수
               arrOthersPoints[tmpX][tmpY] += OMOK.getWinningPoint(tmpX, tmpY, parseInt(userIndex));
             }
           });
         }
-        message += (arrOthersPoints[tmpX][tmpY] + " ");
+        message += (arrTotalPoints[tmpX][tmpY] + "").padStart(4);
       }
       message += "\n";
     }
