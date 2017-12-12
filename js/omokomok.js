@@ -217,9 +217,6 @@ const OMOK = {
     ctx.textAlign = 'center'; 
     ctx.fillStyle = color;
     ctx.fillText(text, x, y+5);
-    // ctx.strokeStyle = 'white';
-    // ctx.lineWidth = 0.1;
-    // ctx.strokeText(text, x, y+5);
   },
   // 바둑돌 그리기
   drawStone(x, y, userIndex, turnIndex, bIsRedraw = false) {
@@ -277,15 +274,10 @@ const OMOK = {
 
     for (x in totalPoints) {
       for (y in totalPoints[x]) {
+        ctx.font = 1 + (totalPoints[x][y]*5) + 'px sans-serif';
         ctx.fillText(totalPoints[x][y], x*space+OMOK.margin, y*space+OMOK.margin+5);
       }
     }
-// getLayerContext
-    // const ctx = OMOK.getLayerContext();
-    // ctx.font = '20px sans-serif';
-    // ctx.textAlign = 'center'; 
-    // ctx.fillStyle = 'red';
-    // ctx.fillText(text, x, y+5);
   },
   getRecommentPoint(totalPoints) {
     let maxNum = 0;
@@ -339,7 +331,7 @@ const OMOK = {
       message += "\n";
     }
     let recommendPoint = OMOK.getRecommentPoint(arrTotalPoints);
-    // OMOK.drawRecommendPoint(arrTotalPoints);
+    OMOK.drawRecommendPoint(arrTotalPoints);
     console.log(message);
 
   },
