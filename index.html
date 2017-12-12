@@ -8,18 +8,20 @@
   <!--script src="https://unpkg.com/deeplearn"></script-->
 </head>
 <body>
-<canvas id="board" width="600" height="600"></canvas>
-<div align="center">
-  <input type="button" class="btn" value="되돌리기 금지" id="btnBack" disabled="disabled" />
-  <input type="text" value="" id="display" readonly="readonly" />
-  <input type="button" class="btn" value="재시작" id="btnRestart" />
+<div align="left">
+  <canvas id="board" width="600" height="600"></canvas>
+  <div align="left">
+    <input type="button" class="btn" value="되돌리기 금지" id="btnBack" disabled="disabled" />
+    <input type="text" value="" id="display" readonly="readonly" />
+    <input type="button" class="btn" value="재시작" id="btnRestart" />
+  </div>
+  <div align="left">
+    <textarea id="chatBox" readonly="readonly"> -- Welcome -- </textarea>
+    <textarea id="console" readonly="readonly"> -- Console -- </textarea><br/>
+    <input type="text" id="chatInput" />
+  </div>
+  <canvas id="touchLayer" width="600" height="600"></canvas>
 </div>
-<div align="center">
-  <textarea id="chatBox" readonly="readonly"> -- Welcome -- </textarea>
-  <textarea id="console" readonly="readonly"> -- Console -- </textarea><br/>
-  <input type="text" id="chatInput" />
-</div>
-<canvas id="touchLayer" width="600" height="600"></canvas>
 <script src="./js/omokomok.js"></script>
 </body>
 </html>
