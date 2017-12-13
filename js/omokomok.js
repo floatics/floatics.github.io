@@ -4,6 +4,7 @@ const OMOK = {
   iTurnIndex: 0,
   lineCount: 15,
   margin: 20,
+  isPlaying: false,
   humanize: 0.05,
   users: ['black', 'white'/*, 'pink'/*, 'darkblue'/*, 'darkred'*/],
   canvas: document.getElementById('board'),
@@ -40,6 +41,7 @@ const OMOK = {
     OMOK.listenOtherStone();
     OMOK.resetGame();
     OMOK.bindChatEvent();
+    OMOK.isPlaying = true;
   },
   setTouchLayer() {
     let touchLayer = document.getElementById('touchLayer');
@@ -148,6 +150,9 @@ const OMOK = {
     OMOK.iTurnIndex = 0;
     // 바둑돌 
     OMOK.touchLayer.addEventListener('click', (e) => {
+      if (OMOK.isPlaying === false) {
+        return false;
+      }
       const x = event.pageX - elemLeft;
       const y = event.pageY - elemTop;
       const iUserIndex = (OMOK.iTurnIndex % OMOK.users.length);
@@ -428,6 +433,7 @@ const OMOK = {
     // OMOK.consoleLog(message);
 
     if (maxCount === 5) {
+      OMOK.isPlaying = false;
       setTimeout(function() {
         alert(OMOK.users[iUserIndex] + ' 승리 !!!');
       }, 0);
