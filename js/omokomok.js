@@ -5,7 +5,7 @@ const OMOK = {
   lineCount: 15,
   margin: 20,
   humanize: 0.05,
-  users: ['black', 'white'/*, 'pink', 'darkblue', 'darkred'*/],
+  users: ['black', 'white'/*, 'pink'/*, 'darkblue'/*, 'darkred'*/],
   canvas: document.getElementById('board'),
   touchLayer: document.getElementById('touchLayer'),
   btnHistoryBack: document.getElementById('btnBack'),
@@ -336,9 +336,9 @@ const OMOK = {
     }
     let recommendPoint = OMOK.getRecommentPoint(arrTotalPoints);
     OMOK.getLayerContext().clearRect(0, 0, OMOK.canvas.width, OMOK.canvas.height);
-    OMOK.drawRecommendPoint(arrTotalPoints, "rgba(0, 255, 0, 0.5)", 4);
-    OMOK.drawRecommendPoint(arrOthersPoints, "rgba(0, 0, 255, 0.5)", 7);
-    OMOK.drawRecommendPoint(arrMyPoints, "rgba(255, 0, 0, 0.5)", 7);
+    // OMOK.drawRecommendPoint(arrTotalPoints, "rgba(0, 255, 0, 0.5)", 4);
+    // OMOK.drawRecommendPoint(arrOthersPoints, "rgba(0, 0, 255, 0.5)", 7);
+    // OMOK.drawRecommendPoint(arrMyPoints, "rgba(255, 0, 0, 0.5)", 7);
     console.log(message);
 
   },
