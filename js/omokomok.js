@@ -255,7 +255,7 @@ const OMOK = {
       ctx.arc(x, y, (space / 2 * 0.9), 0, 2 * Math.PI, false);
       ctx.fill();
 
-      // OMOK.drawText(x, y, parseInt(turnIndex) + 1);
+      OMOK.drawText(x, y, parseInt(turnIndex) + 1);
 
       OMOK.checkWinner(indexOfX, indexOfY, userIndex);
       OMOK.calculatePoint(userIndex);
@@ -341,9 +341,9 @@ const OMOK = {
     }
     let recommendPoint = OMOK.getRecommentPoint(arrTotalPoints);
     OMOK.getLayerContext().clearRect(0, 0, OMOK.canvas.width, OMOK.canvas.height);
-    // OMOK.drawRecommendPoint(arrTotalPoints, "rgba(0, 255, 0, 0.5)", 4);
-    // OMOK.drawRecommendPoint(arrOthersPoints, "rgba(0, 0, 255, 0.5)", 7);
-    // OMOK.drawRecommendPoint(arrMyPoints, "rgba(255, 0, 0, 0.5)", 7);
+    OMOK.drawRecommendPoint(arrTotalPoints, "rgba(0, 255, 0, 0.5)", 4);
+    OMOK.drawRecommendPoint(arrOthersPoints, "rgba(0, 0, 255, 0.5)", 7);
+    OMOK.drawRecommendPoint(arrMyPoints, "rgba(255, 0, 0, 0.5)", 7);
     console.log(message);
 
   },
