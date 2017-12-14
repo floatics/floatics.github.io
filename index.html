@@ -16,10 +16,14 @@
     <input type="button" class="btn" value="재시작" id="btnRestart" />
   </div>
   <div align="left">
+    <input type="button" class="btn" value="toggleDebug" id="toggleDebug" />
+  </div>
+  <div align="left">
     <textarea id="chatBox" readonly="readonly"> -- Welcome -- </textarea>
     <textarea id="console" readonly="readonly"> -- Console -- </textarea><br/>
     <input type="text" id="chatInput" />
   </div>
+  <canvas id="debugLayer" width="600" height="600"></canvas>
   <canvas id="touchLayer" width="600" height="600"></canvas>
 </div>
 <script src="./js/omokomok.js"></script>

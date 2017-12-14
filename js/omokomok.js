@@ -1,4 +1,7 @@
 const OMOK = {
+  CONFIG: {
+    isDebug: true,
+  },
   stonesLocations: [],
   history: [],
   iTurnIndex: 0,
@@ -6,8 +9,10 @@ const OMOK = {
   margin: 20,
   isPlaying: false,
   humanize: 0.05,
-  users: ['black', 'white'/*, 'pink'/*, 'darkblue'/*, 'darkred'*/],
+  users: ['black', 'white', 'pink'/*, 'darkblue', 'darkred'*/],
+  comUsers: [2],
   canvas: document.getElementById('board'),
+  debugLayer: document.getElementById('debugLayer'),
   touchLayer: document.getElementById('touchLayer'),
   btnHistoryBack: document.getElementById('btnBack'),
   context: null,
@@ -23,7 +28,7 @@ const OMOK = {
   },
   getLayerContext: () => {
     if (!OMOK.layerContext) {
-      OMOK.layerContext = OMOK.touchLayer.getContext('2d');
+      OMOK.layerContext = OMOK.debugLayer.getContext('2d');
     }
     return OMOK.layerContext;
   },
@@ -41,13 +46,21 @@ const OMOK = {
     OMOK.listenOtherStone();
     OMOK.resetGame();
     OMOK.bindChatEvent();
+    OMOK.toggleDebug();
     OMOK.isPlaying = true;
   },
+  toggleDebug() {
+    document.getElementById('toggleDebug').addEventListener('click', function(e) {
+      OMOK.debugLayer.hidden = !OMOK.debugLayer.hidden;
+    });
+  },
   setTouchLayer() {
-    let touchLayer = document.getElementById('touchLayer');
-    touchLayer.style.top = 0;
-    touchLayer.style.left = 0;
-    touchLayer.style.position = "absolute";
+    OMOK.touchLayer.style.top = 0;
+    OMOK.touchLayer.style.left = 0;
+    OMOK.touchLayer.style.position = "absolute";
+    OMOK.debugLayer.style.top = 0;
+    OMOK.debugLayer.style.left = 0;
+    OMOK.debugLayer.style.position = "absolute";
   },
   updateDisplay() {
     document.getElementById('display').value =(OMOK.iTurnIndex+1) + ' / ' + OMOK.users[OMOK.iTurnIndex % OMOK.users.length];
@@ -303,7 +316,8 @@ const OMOK = {
       }
     }
     let index = Math.floor(Math.random() * recommendPoints.length);
-    console.log(recommendPoints[index]);
+    // console.log(recommendPoints[index]);
+    return recommendPoints[index];
   },
   // 
   calculatePoint(iUserIndex) {
@@ -339,13 +353,14 @@ const OMOK = {
       }
       message += "\n";
     }
-    let recommendPoint = OMOK.getRecommentPoint(arrTotalPoints);
+    // console.log(myIndex);
     OMOK.getLayerContext().clearRect(0, 0, OMOK.canvas.width, OMOK.canvas.height);
     OMOK.drawRecommendPoint(arrTotalPoints, "rgba(0, 255, 0, 0.5)", 4);
     OMOK.drawRecommendPoint(arrOthersPoints, "rgba(0, 0, 255, 0.5)", 7);
     OMOK.drawRecommendPoint(arrMyPoints, "rgba(255, 0, 0, 0.5)", 7);
-    console.log(message);
+    // console.log(message);
 
+    // let recommendPoint = OMOK.getRecommentPoint(arrTotalPoints);
   },
   // 연속된돌의 점수
   getWinningPoint(x, y, iUserIndex) {
