@@ -9,7 +9,8 @@ const OMOK = {
   margin: 20,
   isPlaying: false,
   humanize: 0.05,
-  users: ['black', 'white', 'pink'/*, 'darkblue', 'darkred'*/],
+  users: ['black', 'white'/*, 'pink'/*, 'darkblue', 'darkred'*/],
+  myStone: null,
   comUsers: [2],
   canvas: document.getElementById('board'),
   debugLayer: document.getElementById('debugLayer'),
@@ -48,6 +49,13 @@ const OMOK = {
     OMOK.bindChatEvent();
     OMOK.toggleDebug();
     OMOK.isPlaying = true;
+  },
+  checkMyTurn() {
+    const playerNo = OMOK.iTurnIndex % OMOK.users.length;
+    if (OMOK.myStone === null) {
+      OMOK.myStone = playerNo;
+    }
+    return (OMOK.myStone === playerNo);
   },
   toggleDebug() {
     document.getElementById('toggleDebug').addEventListener('click', function(e) {
@@ -166,6 +174,11 @@ const OMOK = {
       if (OMOK.isPlaying === false) {
         return false;
       }
+
+      if (OMOK.checkMyTurn() === false) {
+        return false;
+      }
+
       const x = event.pageX - elemLeft;
       const y = event.pageY - elemTop;
       const iUserIndex = (OMOK.iTurnIndex % OMOK.users.length);
