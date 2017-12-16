@@ -58,8 +58,13 @@ const OMOK = {
     return (OMOK.myStone === playerNo);
   },
   toggleDebug() {
+    console.log(OMOK.debugLayer.hidden);
+    if (localStorage && localStorage.isHideDebug === "true") {
+      OMOK.debugLayer.hidden = true;
+    }
     document.getElementById('toggleDebug').addEventListener('click', function(e) {
       OMOK.debugLayer.hidden = !OMOK.debugLayer.hidden;
+      localStorage.isHideDebug = OMOK.debugLayer.hidden;
     });
   },
   setTouchLayer() {
