@@ -34,8 +34,61 @@ const OMOK = {
     return OMOK.layerContext;
   },
   // 초기화 함수
-  init(){
+  init() {
+    OMOK.setChannel();
+    OMOK.bindChannelMoveEvent();
+    if (OMOK.getQueryVariable('channel') === OMOK.roomNo) {
+      OMOK.showGameLayer();
+      OMOK.initGame();
+    }
+  },
+  showGameLayer() {
+    document.getElementById('main').style.display = "block";
+    document.getElementById('channel').style.display = "none";
+  },
+  moveToWaitingRoom() {
+    document.getElementById('moveToWaitingRoom').addEventListener('click', function(e) {
+        let url = document.location.protocol + '//' + document.location.hostname + document.location.pathname;
+        document.location.href = url;
+    });
+  },
+  bindChannelMoveEvent() {
+    document.getElementById('moveChannel').addEventListener('click', function(e) {
+      let channel = document.getElementById('channelSelector').value.trim();
+      if (channel && channel !== "") {
+        let url = document.location.protocol + '//' + document.location.hostname + document.location.pathname;
+            url += '?channel=' + channel;
+        document.location.href = url;
+      }
+    });
+  },
+  setChannel() {
+    let channel = OMOK.getQueryVariable('channel');
+    if (!channel && localStorage.channel && localStorage.channel) {
+      channel = localStorage.channel;
+    }
+    if (channel) {
+      OMOK.roomNo = channel;
+      document.getElementById('channelSelector').value = channel;
+      if (localStorage) {
+        localStorage.channel = channel;
+      }
+    }
+    OMOK.consoleLog('CH : ' + OMOK.roomNo);
+  },
+  getQueryVariable(variable) {
+    var query = window.location.search.substring(1);
+    var vars = query.split('&');
+    for (var i = 0; i < vars.length; i++) {
+      var pair = vars[i].split('=');
+      if (decodeURIComponent(pair[0]) == variable) {
+        return decodeURIComponent(pair[1]);
+      }
+    }
+  },
+  initGame() {
     OMOK.clear();
+    OMOK.moveToWaitingRoom();
     OMOK.initStonesLocations();
     OMOK.initStonesHistory();
     OMOK.drawBoard();
