@@ -8,12 +8,13 @@
   <!--script src="https://unpkg.com/deeplearn"></script-->
 </head>
 <body>
-<div align="left">
+<div id="main" align="left">
   <canvas id="board" width="600" height="600"></canvas>
   <div align="left">
     <input type="button" class="btn" value="되돌리기 금지" id="btnBack" disabled="disabled" />
     <input type="text" value="" id="display" readonly="readonly" />
     <input type="button" class="btn" value="재시작" id="btnRestart" />
+    <input type="button" class="btn" value="대기실" id="moveToWaitingRoom" />
   </div>
   <div align="left">
     <input type="button" class="btn" value="toggleDebug" id="toggleDebug" />
@@ -25,6 +26,10 @@
   </div>
   <canvas id="debugLayer" width="600" height="600"></canvas>
   <canvas id="touchLayer" width="600" height="600"></canvas>
+</div>
+<div id="channel" align="left">
+  <input type="text" id="channelSelector" value="testRoom" placeholder="channel" />
+  <input type="button" id="moveChannel" value="go" />
 </div>
 <script src="./js/omokomok.js"></script>
 </body>
