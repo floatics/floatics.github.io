@@ -2,6 +2,8 @@
 canvas#board { background: #DC8; display: block; margin: 0; }
 div { display: block; margin: 0; }
 div#main { display: none; }
-input#display, .btn { margin: 0; width: 145px; height: 40px; font-size: 25px;}
-input#chatInput { margin: 0; width: 600px;}
-textarea {width: 300px; height:150px;}
+input#display, .btn { margin: 0; width: 145px; height: 40px; font-size: 25px; }
+input#chatInput { margin: 0; width: 600px; }
+textarea {width: 300px; height:150px; }
+table { border-collapse: collapse; }
+th, td { border-bottom: 1px solid #ddd; padding: 5px; }
