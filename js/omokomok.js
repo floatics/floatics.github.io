@@ -9,6 +9,7 @@ const OMOK = {
   margin: 20,
   isPlaying: false,
   humanize: 0.05,
+  userColors: ['black', 'white', 'pink', 'darkblue', 'darkred'],
   users: ['black', 'white'/*, 'pink'/*, 'darkblue', 'darkred'*/],
   myStone: null,
   comUsers: [2],
@@ -39,12 +40,31 @@ const OMOK = {
     OMOK.bindChannelMoveEvent();
     if (OMOK.getQueryVariable('channel') === OMOK.roomNo) {
       OMOK.showGameLayer();
+      OMOK.setPlayerSettings();
       OMOK.initGame();
+    }
+  },
+  getPlayerSettings() {
+    return Object.values(document.querySelectorAll('input[type="radio"]:checked')).map((dom) => dom.value).join('');
+  },
+  setPlayerSettings() {
+    let player = OMOK.getQueryVariable('player');
+    if (typeof player === 'string' && player.length === 5) {
+      OMOK.users = [];
+      let players = player.split('');
+      Object.keys(players).forEach((idx) => {
+        if (players[idx] === '1') {
+          OMOK.users.push(OMOK.userColors[idx]);
+        } else if (players[idx] === '2') {
+          // OMOK.users.push(OMOK.userColors[idx]);
+        }
+      })
     }
   },
   showGameLayer() {
     document.getElementById('main').style.display = "block";
     document.getElementById('channel').style.display = "none";
+    document.getElementById('player').style.display = "none";
   },
   moveToWaitingRoom() {
     document.getElementById('moveToWaitingRoom').addEventListener('click', function(e) {
@@ -58,6 +78,7 @@ const OMOK = {
       if (channel && channel !== "") {
         let url = document.location.protocol + '//' + document.location.hostname + document.location.pathname;
             url += '?channel=' + channel;
+            url += '&player=' + OMOK.getPlayerSettings();
         document.location.href = url;
       }
     });
