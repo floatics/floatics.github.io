@@ -45,7 +45,7 @@ const OMOK = {
     }
   },
   getPlayerSettings() {
-    return Object.values(document.querySelectorAll('input[type="radio"]:checked')).map((dom) => dom.value).join('');
+    return Object.values(document.querySelectorAll('input.player:checked')).map((dom) => dom.value).join('');
   },
   setPlayerSettings() {
     let player = OMOK.getQueryVariable('player');
@@ -65,12 +65,16 @@ const OMOK = {
     document.getElementById('main').style.display = "block";
     document.getElementById('channel').style.display = "none";
     document.getElementById('player').style.display = "none";
+    document.getElementById('gameMode').style.display = "none";
   },
   moveToWaitingRoom() {
     document.getElementById('moveToWaitingRoom').addEventListener('click', function(e) {
         let url = document.location.protocol + '//' + document.location.hostname + document.location.pathname;
         document.location.href = url;
     });
+  },
+  getNetworkMode() {
+    return document.querySelector('.gameMode:checked').value;
   },
   bindChannelMoveEvent() {
     document.getElementById('moveChannel').addEventListener('click', function(e) {
@@ -79,6 +83,7 @@ const OMOK = {
         let url = document.location.protocol + '//' + document.location.hostname + document.location.pathname;
             url += '?channel=' + channel;
             url += '&player=' + OMOK.getPlayerSettings();
+            url += '&mode=' + OMOK.getNetworkMode();
         document.location.href = url;
       }
     });
@@ -125,6 +130,9 @@ const OMOK = {
     OMOK.isPlaying = true;
   },
   checkMyTurn() {
+    if (OMOK.getQueryVariable('mode').trim() === 'S') {
+      return true;
+    }
     const playerNo = OMOK.iTurnIndex % OMOK.users.length;
     if (OMOK.myStone === null) {
       OMOK.myStone = playerNo;
