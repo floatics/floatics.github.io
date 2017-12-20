@@ -28,10 +28,12 @@
   <canvas id="touchLayer" width="600" height="600"></canvas>
 </div>
 <div id="channel" align="left">
+  <h2>Channel</h2>
   <input type="text" id="channelSelector" value="testRoom" placeholder="channel" />
   <input type="button" id="moveChannel" value="go" />
 </div>
 <div id="player" align="left">
+  <h2>Players</h2>
   <table>
     <tbody>
       <tr>
@@ -39,9 +41,9 @@
           1P
         </td>
         <td>
-          <label><input type="radio" name="1p" value="0" disabled="disabled">NONE</label>
-          <label><input type="radio" name="1p" value="2" disabled="disabled">CPU</label>
-          <label><input type="radio" name="1p" value="1" checked="checked">BLACK</label>
+          <label><input type="radio" class="player" name="1p" value="0" disabled="disabled">None</label>
+          <label><input type="radio" class="player" name="1p" value="2" disabled="disabled">AI</label>
+          <label><input type="radio" class="player" name="1p" value="1" checked="checked">BLACK</label>
         </td>
       </tr>
       <tr>
@@ -49,9 +51,9 @@
           2P
         </td>
         <td>
-          <label><input type="radio" name="2p" value="0" disabled="disabled">NONE</label>
-          <label><input type="radio" name="2p" value="2" disabled="disabled">CPU</label>
-          <label><input type="radio" name="2p" value="1" checked="checked">WHITE</label>
+          <label><input type="radio" class="player" name="2p" value="0" disabled="disabled">None</label>
+          <label><input type="radio" class="player" name="2p" value="2" disabled="disabled">AI</label>
+          <label><input type="radio" class="player" name="2p" value="1" checked="checked">WHITE</label>
         </td>
       </tr>
       <tr>
@@ -59,9 +61,9 @@
           3P
         </td>
         <td>
-          <label><input type="radio" name="3p" value="0" checked="checked">NONE</label>
-          <label><input type="radio" name="3p" value="2" disabled="disabled">CPU</label>
-          <label><input type="radio" name="3p" value="1">PINK</label>
+          <label><input type="radio" class="player" name="3p" value="0" checked="checked">None</label>
+          <label><input type="radio" class="player" name="3p" value="2" disabled="disabled">AI</label>
+          <label><input type="radio" class="player" name="3p" value="1">PINK</label>
         </td>
       </tr>
       <tr>
@@ -69,9 +71,9 @@
           4P
         </td>
         <td>
-          <label><input type="radio" name="4p" value="0" checked="checked">NONE</label>
-          <label><input type="radio" name="4p" value="2" disabled="disabled">CPU</label>
-          <label><input type="radio" name="4p" value="1">BLUE</label>
+          <label><input type="radio" class="player" name="4p" value="0" checked="checked">None</label>
+          <label><input type="radio" class="player" name="4p" value="2" disabled="disabled">AI</label>
+          <label><input type="radio" class="player" name="4p" value="1">BLUE</label>
         </td>
       </tr>
       <tr>
@@ -79,13 +81,18 @@
           5P
         </td>
         <td>
-          <label><input type="radio" name="5p" value="0" checked="checked">NONE</label>
-          <label><input type="radio" name="5p" value="2" disabled="disabled">CPU</label>
-          <label><input type="radio" name="5p" value="1">RED</label>
+          <label><input type="radio" class="player" name="5p" value="0" checked="checked">None</label>
+          <label><input type="radio" class="player" name="5p" value="2" disabled="disabled">AI</label>
+          <label><input type="radio" class="player" name="5p" value="1">RED</label>
         </td>
       </tr>
     </tbody>
   </table>
+</div>
+<div id="gameMode">
+  <h2>Network Mode</h2>
+  <label><input type="radio" class="gameMode" name="gm" value="S" checked="checked" />Stand Alone</label><br/>
+  <label><input type="radio" class="gameMode" name="gm" value="M"/>Multiple Clients</label>
 </div>
 <script src="./js/omokomok.js"></script>
 </body>
