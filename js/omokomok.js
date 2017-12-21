@@ -2,6 +2,7 @@ const OMOK = {
   CONFIG: {
     isDebug: true,
   },
+  lastKey: null,
   stonesLocations: [],
   history: [],
   iTurnIndex: 0,
@@ -127,7 +128,6 @@ const OMOK = {
     OMOK.resetGame();
     OMOK.bindChatEvent();
     OMOK.toggleDebug();
-    OMOK.isPlaying = true;
   },
   checkMyTurn() {
     if (OMOK.getQueryVariable('mode').trim() === 'S') {
@@ -195,7 +195,7 @@ const OMOK = {
   listenOtherStone() {
     firebase.database().ref('omok/' + OMOK.roomNo).on('child_added', function(data) {
       var info = data.val();
-      if (info.uid !== OMOK.uid) {
+      if (data.key !== OMOK.lastKey) {
         OMOK.drawStone(info.x, info.y, info.index, info.turn, true);
         OMOK.iTurnIndex++;
         OMOK.updateDisplay();
@@ -217,6 +217,7 @@ const OMOK = {
     firebase.auth().onAuthStateChanged((user) => {
       OMOK.consoleLog('Ready!');
       OMOK.consoleLog('UID : ' + user.uid);
+      OMOK.isPlaying = true;
       OMOK.uid = (user) ? user.uid: null;
     });
     OMOK.database = firebase.database();
@@ -379,6 +380,7 @@ const OMOK = {
   },
   sendToServer(x, y, index, turn, uid) {
     let key = firebase.database().ref('omok').child(OMOK.roomNo).push().key;
+    OMOK.lastKey = key;
     firebase.database().ref('omok/' + OMOK.roomNo + '/' + key).set({uid: uid, index: index, turn: turn, x: x, y: y});
   },
   clearCanvas(ctx) {
