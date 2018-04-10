@@ -26,7 +26,17 @@
           reverse: function() {
             return this.text.split('').reverse().join('');
           },
-        }
+          shuffle: function() {
+            let aText = this.text.split('');
+            Object.keys(aText).forEach(i => {
+              var j = Math.floor(Math.random() * aText.length);
+              var temp = aText[i];
+              aText[i] = aText[j];
+              aText[j] = temp;
+            });
+            return aText.join('');
+          },
+        },
       });
     }
   </script>
@@ -34,7 +44,8 @@
 <body>
 <div id="app">
   <input type="text" v-model="text" /><br/>
-  <input type="text" v-bind:value="reverse()" disabled/>
+  <input type="text" v-bind:value="reverse()" disabled/><br/>
+  <input type="text" v-bind:value="shuffle()" disabled/>
 </div>
 </body>
 </html>
