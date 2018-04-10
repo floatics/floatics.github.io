@@ -1,0 +1,41 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="googlebot" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script type="text/javascript" src="//unpkg.com/vue"></script>
+  <style type="text/css">
+    input {
+      font-size: 5em;
+      width: 100%;
+      text-align: center;
+    }
+  </style>
+  <title>Vue</title>
+  <script type="text/javascript">
+    window.onload=function(){
+      new Vue({
+        el: "#app",
+        data: {
+          text: '거꾸로 말해요',
+        },
+        methods: {
+          reverse: function() {
+            return this.text.split('').reverse().join('');
+          },
+        }
+      });
+    }
+  </script>
+</head>
+<body>
+<div id="app">
+  <input type="text" v-model="text" /><br/>
+  <input type="text" v-bind:value="reverse()" disabled/>
+</div>
+</body>
+</html>
+
